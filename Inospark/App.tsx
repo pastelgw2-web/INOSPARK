@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js'; // Import Supabase
 import Navigation from './components/Navigation';
 import ProjectCard from './components/ProjectCard';
 import NewsSlider from './components/NewsSlider';
@@ -13,7 +13,11 @@ import StoryPortal from './pages/StoryPortal';
 import { Project, User, UserRole, ProjectCategory, ProjectStatus, Donation, SiteSettings, VolunteerApplication } from './types';
 import { MOCK_PROJECTS, MOCK_USERS, MOCK_ANNOUNCEMENTS, MOCK_CHALLENGES } from './constants';
 
-// Fixed: Moved PageWrapper outside the App component and used React.FC to properly handle the children prop in TypeScript
+// Inisialisasi Supabase menggunakan variabel yang sudah kita pasang di Cloudflare
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-20 md:pt-28 pb-24 md:pb-12 animate-in fade-in duration-500">
     {children}
@@ -23,7 +27,6 @@ const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
-  const [users, setUsers] = useState<User[]>(MOCK_USERS);
   const [donations, setDonations] = useState<Donation[]>([]);
   const [volunteerApps, setVolunteerApps] = useState<VolunteerApplication[]>([]);
   const [settings, setSettings] = useState<SiteSettings>({
@@ -38,6 +41,50 @@ const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
+  // FUNGSI BARU: Mengambil data donasi dari Supabase saat web dibuka
+  useEffect(() => {
+    const fetchDonations = async () => {
+      const { data, error } = await supabase.from('donations').select('*');
+      if (!error && data) setDonations(data as Donation[]);
+    };
+    fetchDonations();
+  }, []);
+
+  // FUNGSI UPDATE: Menyimpan donasi ke Supabase
+  const handleDonation = async (projectId: string, amount: number, isRecurring: boolean) => {
+    const donorName = user?.name || 'Public Donor';
+    
+    // 1. Simpan ke Supabase
+    const { error } = await supabase
+      .from('donations')
+      .insert([
+        { projectId, amount, donorName, isRecurring, timestamp: new Date().toISOString() }
+      ]);
+
+    if (error) {
+      console.error('Error saving to Supabase:', error.message);
+      alert('Gagal menyimpan data ke database!');
+      return;
+    }
+
+    // 2. Update tampilan lokal agar cepat
+    const newDonation: Donation = {
+      id: `d-${Date.now()}`,
+      projectId,
+      amount,
+      donorName,
+      isRecurring,
+      timestamp: new Date().toISOString()
+    };
+    setDonations([...donations, newDonation]);
+    setProjects(projects.map(p => 
+      p.id === projectId ? { ...p, currentFunding: p.currentFunding + amount, donorsCount: p.donorsCount + 1 } : p
+    ));
+    
+    alert(`Berhasil! Dukungan Rp ${amount.toLocaleString('id-ID')} tersimpan di Database.`);
+  };
+
+  // --- Sisa kode renderContent dan handle lainnya tetap sama seperti sebelumnya ---
   const handleNavigate = (view: string) => {
     setSelectedProjectId(null);
     setSelectedStoryId(null);
@@ -70,22 +117,6 @@ const App: React.FC = () => {
     document.documentElement.style.setProperty('--primary-hover', settings.primaryColor + 'EE');
     document.title = `${settings.platformName} - Elevate Innovation`;
   }, [settings]);
-
-  const handleDonation = (projectId: string, amount: number, isRecurring: boolean) => {
-    const newDonation: Donation = {
-      id: `d-${Date.now()}`,
-      projectId,
-      amount,
-      donorName: user?.name || 'Public Donor',
-      isRecurring,
-      timestamp: new Date().toISOString()
-    };
-    setDonations([...donations, newDonation]);
-    setProjects(projects.map(p => 
-      p.id === projectId ? { ...p, currentFunding: p.currentFunding + amount, donorsCount: p.donorsCount + 1 } : p
-    ));
-    alert(`Terima kasih! Dukungan Rp ${amount.toLocaleString('id-ID')} berhasil disalurkan.`);
-  };
 
   const handleUpdateUserRole = (newRole: UserRole) => {
     if (user) {
