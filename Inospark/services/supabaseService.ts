@@ -1,14 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Mengambil kunci dari Environment Variables yang sudah kamu pasang di Cloudflare
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Menggunakan URL dan Anon Key yang sudah kamu temukan
+const supabaseUrl = 'https://ejlqpmhqscwgvsrdqkwf.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqbHFwbWhxc2N3Z3ZzcmRxa3dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyNjQ2NTMsImV4cCI6MjA4NTg0MDY1M30.dL7zicQzvJeqN8VVrXAw5QK4-2o8UqUxPQYDm2O4UYg';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 /**
  * FUNGSI UNTUK START PROJECT
- * Memasukkan data proyek baru ke tabel 'projects'
+ * Memasukkan data proyek baru ke tabel 'projects' di Supabase
  */
 export const createNewProject = async (projectData: any) => {
   const { data, error } = await supabase
@@ -33,8 +33,8 @@ export const createNewProject = async (projectData: any) => {
 };
 
 /**
- * FUNGSI UNTUK CMS / DASHBOARD
- * Mengambil semua data proyek terbaru dari database
+ * FUNGSI UNTUK MENGAMBIL DATA
+ * Digunakan oleh CMS atau Halaman Utama untuk menampilkan proyek dari database
  */
 export const getAllProjects = async () => {
   const { data, error } = await supabase
