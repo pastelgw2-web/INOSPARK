@@ -64,9 +64,12 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
-    document.documentElement.style.setProperty('--primary-hover', settings.primaryColor + 'EE');
-    document.title = `${settings.platformName} - Elevate Innovation`;
+    // Menambahkan pengecekan agar tidak error jika settings kosong
+    if (settings) {
+      document.documentElement.style.setProperty('--primary-color', settings.primaryColor || '#10b981');
+      document.documentElement.style.setProperty('--primary-hover', (settings.primaryColor || '#10b981') + 'EE');
+      document.title = `${settings.platformName || 'InnoSpark'} - Elevate Innovation`;
+    }
   }, [settings]);
 
   const handleDonation = (projectId: string, amount: number, isRecurring: boolean) => {
@@ -184,8 +187,10 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* PERBAIKAN: Menambahkan settings={settings} agar data terkirim ke Navigation */}
       <Navigation 
         user={user} 
+        settings={settings}
         currentView={currentView} 
         onNavigate={handleNavigate} 
         onLogout={() => { setUser(null); setView('home'); }} 
