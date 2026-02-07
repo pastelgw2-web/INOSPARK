@@ -1,4 +1,3 @@
-
 import { Project, ProjectCategory, ProjectStatus, User, UserRole, Announcement, InnovationChallenge, VerificationStatus } from './types';
 
 export const MOCK_USERS: User[] = [
@@ -84,16 +83,11 @@ export const MOCK_CHALLENGES: InnovationChallenge[] = [
   },
   {
     id: 'c2',
-    companyName: 'TechLab Research Institute',
-    title: 'Advanced Materials Testing Support',
-    description: 'Punya inovasi di bidang material berkelanjutan? Kami membuka laboratorium pengujian struktur kami untuk membantu validasi teknis prototipe Anda.',
-    reward: 'Free Lab Access & Certification Guidance',
-    skillsNeeded: ['Materials Science', 'Structural Analysis', 'Quality Assurance']
+    companyName: 'TechLab Research Institute',<br>    title: 'Advanced Materials Testing Support',<br>    description: 'Punya inovasi di bidang material berkelanjutan? Kami membuka laboratorium pengujian struktur kami untuk membantu validasi teknis prototipe Anda.',<br>    reward: 'Free Lab Access & Certification Guidance',<br>    skillsNeeded: ['Materials Science', 'Structural Analysis', 'Quality Assurance']
   }
 ];
 
 export const MOCK_PROJECTS: Project[] = [
-  // ENVIRONMENT CATEGORY
   {
     id: 'p1',
     title: 'OceanPlastic Bot',
@@ -151,8 +145,6 @@ export const MOCK_PROJECTS: Project[] = [
       { id: 's13', name: 'Electrical Design', totalSlots: 2, filledSlots: 1 }
     ]
   },
-
-  // TECHNOLOGY CATEGORY
   {
     id: 'p2',
     title: 'SolarGrid Connect',
@@ -210,8 +202,6 @@ export const MOCK_PROJECTS: Project[] = [
       { id: 's17', name: 'Network Security', totalSlots: 2, filledSlots: 1 }
     ]
   },
-
-  // SOCIAL CATEGORY
   {
     id: 'p7',
     title: 'Disability Inclusion Hub',
@@ -269,8 +259,6 @@ export const MOCK_PROJECTS: Project[] = [
       { id: 's23', name: 'React Native Dev', totalSlots: 1, filledSlots: 0 }
     ]
   },
-
-  // EDUCATION CATEGORY
   {
     id: 'p10',
     title: 'EduVR Chemistry Lab',
@@ -300,91 +288,4 @@ export const MOCK_PROJECTS: Project[] = [
     status: ProjectStatus.ACTIVE,
     targetFunding: 65000000,
     currentFunding: 10000000,
-    imageUrl: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80',
-    createdAt: new Date().toISOString(),
-    donorsCount: 15,
-    volunteersCount: 2,
-    requirements: [
-      { id: 's26', name: 'ML Engineer', totalSlots: 2, filledSlots: 0 },
-      { id: 's27', name: 'ASL Specialist', totalSlots: 1, filledSlots: 1 }
-    ]
-  },
-  {
-    id: 'p12',
-    title: 'Rural STEM Box',
-    tagline: 'Kit eksperimen sains bulanan untuk anak-anak di pedesaan.',
-    description: 'Pengiriman kotak eksperimen DIY setiap bulan untuk memantik minat sains pada anak-anak yang memiliki akses pendidikan terbatas.',
-    innovatorId: 'u1',
-    category: ProjectCategory.EDUCATION,
-    status: ProjectStatus.ACTIVE,
-    targetFunding: 30000000,
-    currentFunding: 28000000,
-    imageUrl: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80',
-    createdAt: new Date().toISOString(),
-    donorsCount: 210,
-    volunteersCount: 10,
-    requirements: [
-      { id: 's28', name: 'Content Creator', totalSlots: 2, filledSlots: 2 },
-      { id: 's29', name: 'Operations', totalSlots: 3, filledSlots: 3 }
-    ]
-  },
-
-  // HEALTH CATEGORY
-  {
-    id: 'p13',
-    title: 'TeleMed Kiosk',
-    tagline: 'Bilik konsultasi medis mandiri untuk area pasar tradisional.',
-    description: 'Kios kesehatan yang dilengkapi alat cek tensi, gula darah, dan layar telekonsultasi dengan dokter umum secara langsung.',
-    innovatorId: 'u1',
-    category: ProjectCategory.HEALTH,
-    status: ProjectStatus.ACTIVE,
-    targetFunding: 180000000,
-    currentFunding: 120000000,
-    imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80',
-    createdAt: new Date().toISOString(),
-    donorsCount: 77,
-    volunteersCount: 4,
-    requirements: [
-      { id: 's30', name: 'Embedded Systems', totalSlots: 1, filledSlots: 0 },
-      { id: 's31', name: 'General Practitioner', totalSlots: 5, filledSlots: 3 }
-    ]
-  },
-  {
-    id: 'p14',
-    title: 'SmartInsulin Patch',
-    tagline: 'Patch insulin cerdas tanpa jarum bertenaga biosensor.',
-    description: 'Pengembangan teknologi patch kulit yang melepaskan insulin secara otomatis berdasarkan kadar glukosa dalam keringat.',
-    innovatorId: 'u1',
-    category: ProjectCategory.HEALTH,
-    status: ProjectStatus.ACTIVE,
-    targetFunding: 450000000,
-    currentFunding: 30000000,
-    imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80',
-    createdAt: new Date().toISOString(),
-    donorsCount: 18,
-    volunteersCount: 2,
-    requirements: [
-      { id: 's32', name: 'Biomedical Engineer', totalSlots: 2, filledSlots: 1 },
-      { id: 's33', name: 'FDA Compliance Expert', totalSlots: 1, filledSlots: 0 }
-    ]
-  },
-  {
-    id: 'p15',
-    title: 'AeroMask Filter+',
-    tagline: 'Masker anti-polusi dengan filter graphene yang dapat dicuci.',
-    description: 'Inovasi masker menggunakan lapisan graphene untuk menyaring partikel PM2.5 secara efektif namun tetap sangat nyaman untuk bernafas.',
-    innovatorId: 'u1',
-    category: ProjectCategory.HEALTH,
-    status: ProjectStatus.ACTIVE,
-    targetFunding: 50000000,
-    currentFunding: 48000000,
-    imageUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80',
-    createdAt: new Date().toISOString(),
-    donorsCount: 312,
-    volunteersCount: 5,
-    requirements: [
-      { id: 's34', name: 'Product Designer', totalSlots: 1, filledSlots: 1 },
-      { id: 's35', name: 'Marketing Specialist', totalSlots: 2, filledSlots: 2 }
-    ]
-  }
-];
+    imageUrl: '
