@@ -1,16 +1,16 @@
-
 import React from 'react';
 import { User, UserRole, SiteSettings } from '../types';
 
 interface NavigationProps {
   user: User | null;
   currentView: string;
-  settings: SiteSettings;
-  setView: (view: string) => void;
+  // Menambahkan tanda tanya (?) agar tidak error jika settings belum dikirim
+  settings?: SiteSettings; 
+  onNavigate: (view: string) => void;
   onLogout: () => void;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ user, currentView, settings, setView, onLogout }) => {
+const Navigation: React.FC<NavigationProps> = ({ user, currentView, settings, onNavigate, onLogout }) => {
   // Define menu items for synchronization
   const mainMenus = [
     { id: 'home', label: 'Explore', icon: (
@@ -29,17 +29,16 @@ const Navigation: React.FC<NavigationProps> = ({ user, currentView, settings, se
 
   return (
     <>
-      {/* TOP BAR - FIXED & FLUSH */}
       <nav className="fixed top-0 left-0 right-0 z-[110] bg-white/80 backdrop-blur-xl border-b border-slate-100 h-16 md:h-20 transition-all">
         <div className="max-w-7xl mx-auto h-full px-4 md:px-8 flex justify-between items-center">
           
-          {/* Logo Section */}
           <div 
             className="flex items-center gap-2.5 cursor-pointer group active-tap"
-            onClick={() => setView('home')}
+            onClick={() => onNavigate('home')}
           >
             <div className="w-9 h-9 md:w-11 md:h-11 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 overflow-hidden">
-              {settings.logoUrl ? (
+              {/* PERBAIKAN: Menggunakan optional chaining (?.) agar tidak crash */}
+              {settings?.logoUrl ? (
                 <img src={settings.logoUrl} alt="Logo" className="w-full h-full object-cover" />
               ) : (
                 <span className="text-sm md:text-xl font-black italic tracking-tighter">IN</span>
@@ -47,18 +46,18 @@ const Navigation: React.FC<NavigationProps> = ({ user, currentView, settings, se
             </div>
             <div className="flex flex-col">
               <span className="text-base md:text-xl font-black tracking-tight text-slate-900 leading-none">
-                {settings.platformName}
+                {/* PERBAIKAN: Fallback nama jika settings kosong */}
+                {settings?.platformName || 'InnoSpark'}
               </span>
               <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest mt-0.5">Innovation Hub</span>
             </div>
           </div>
 
-          {/* Desktop Links - Fully Synchronized */}
           <div className="hidden lg:flex items-center gap-10">
             {mainMenus.map((v) => (
               <button 
                 key={v.id}
-                onClick={() => setView(v.id)}
+                onClick={() => onNavigate(v.id)}
                 className={`text-[11px] font-black uppercase tracking-[0.2em] transition-all relative py-2 ${
                   currentView === v.id ? 'text-emerald-600' : 'text-slate-400 hover:text-slate-900'
                 }`}
@@ -71,12 +70,11 @@ const Navigation: React.FC<NavigationProps> = ({ user, currentView, settings, se
             ))}
           </div>
 
-          {/* User & Auth */}
           <div className="flex items-center gap-2">
             {user ? (
               <div className="flex items-center gap-2">
                 <button 
-                  onClick={() => setView('dashboard')}
+                  onClick={() => onNavigate('dashboard')}
                   className={`flex items-center gap-2 p-1 pr-3 rounded-full border transition-all active-tap ${
                     currentView === 'dashboard' ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-100'
                   }`}
@@ -88,7 +86,7 @@ const Navigation: React.FC<NavigationProps> = ({ user, currentView, settings, se
                 </button>
                 {user.role === UserRole.ADMIN && (
                    <button 
-                    onClick={() => setView('admin')}
+                    onClick={() => onNavigate('admin')}
                     className={`p-2 transition-colors active-tap ${currentView === 'admin' ? 'text-emerald-600' : 'text-slate-400 hover:text-emerald-500'}`}
                     title="CMS Panel"
                    >
@@ -102,13 +100,13 @@ const Navigation: React.FC<NavigationProps> = ({ user, currentView, settings, se
             ) : (
               <div className="flex items-center gap-1.5">
                 <button 
-                  onClick={() => setView('login')}
+                  onClick={() => onNavigate('login')}
                   className="px-4 py-2.5 text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-600 hover:text-emerald-600 active-tap"
                 >
                   Sign In
                 </button>
                 <button 
-                  onClick={() => setView('register')}
+                  onClick={() => onNavigate('register')}
                   className="px-5 py-2.5 md:px-7 md:py-3.5 bg-emerald-600 text-white text-[10px] md:text-xs font-black uppercase tracking-widest rounded-full hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 active-tap"
                 >
                   Join Us
@@ -119,13 +117,12 @@ const Navigation: React.FC<NavigationProps> = ({ user, currentView, settings, se
         </div>
       </nav>
 
-      {/* MOBILE BOTTOM NAVIGATION - SUPER APP STYLE */}
       <nav className="fixed bottom-0 left-0 right-0 z-[110] lg:hidden bg-white border-t border-slate-100 h-16 px-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
         <div className="flex justify-between items-center h-full">
           {mainMenus.map(item => (
             <button 
               key={item.id}
-              onClick={() => setView(item.id)}
+              onClick={() => onNavigate(item.id)}
               className={`flex flex-col items-center gap-1 transition-all active-tap ${
                 currentView === item.id ? 'text-emerald-600' : 'text-slate-400'
               }`}
