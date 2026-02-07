@@ -12,7 +12,6 @@ import StoryPortal from './pages/StoryPortal';
 import { Project, User, UserRole, ProjectCategory, ProjectStatus, Donation, SiteSettings, VolunteerApplication } from './types';
 import { MOCK_PROJECTS, MOCK_USERS, MOCK_ANNOUNCEMENTS, MOCK_CHALLENGES } from './constants';
 
-// Fixed: Moved PageWrapper outside the App component and used React.FC to properly handle the children prop in TypeScript
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-20 md:pt-28 pb-24 md:pb-12 animate-in fade-in duration-500">
     {children}
@@ -86,13 +85,6 @@ const App: React.FC = () => {
     alert(`Terima kasih! Dukungan Rp ${amount.toLocaleString('id-ID')} berhasil disalurkan.`);
   };
 
-  const handleUpdateUserRole = (newRole: UserRole) => {
-    if (user) {
-      setUser({ ...user, role: newRole });
-      alert(`Account Updated: You are now a ${newRole}. Enjoy full access!`);
-    }
-  };
-
   const renderContent = () => {
     if (selectedProjectId) {
       const p = projects.find(proj => proj.id === selectedProjectId);
@@ -140,5 +132,69 @@ const App: React.FC = () => {
       case 'corporate':
         return (
           <PageWrapper>
-            <CollaborationHub 
-              challenges={MOCK_CHALLENGES
+            <CollaborationHub challenges={MOCK_CHALLENGES} user={user} onJoinChallenge={(id) => alert('Joined!')} />
+          </PageWrapper>
+        );
+      case 'login':
+        return <PageWrapper><Auth onLogin={(u) => { setUser(u); setView('home'); }} onBack={() => setView('home')} /></PageWrapper>;
+      default:
+        const filteredProjects = projects.filter(p => 
+          (selectedCategory === 'All' || p.category === selectedCategory) &&
+          (p.title.toLowerCase().includes(searchTerm.toLowerCase()) || p.description.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+
+        return (
+          <>
+            <NewsSlider items={MOCK_ANNOUNCEMENTS} onOpenStory={handleOpenStory} />
+            <PageWrapper>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div className="relative flex-1 max-w-md">
+                  <input
+                    type="text"
+                    placeholder="Search innovation..."
+                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+                  {['All', 'Social', 'Technology', 'Environment', 'Art'].map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                        selectedCategory === cat ? 'bg-emerald-600 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                {filteredProjects.map(project => (
+                  <ProjectCard key={project.id} project={project} onClick={() => handleOpenProject(project.id)} />
+                ))}
+              </div>
+            </PageWrapper>
+          </>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-white">
+      <Navigation 
+        user={user} 
+        currentView={currentView} 
+        onNavigate={handleNavigate} 
+        onLogout={() => { setUser(null); setView('home'); }} 
+      />
+      <main>
+        {renderContent()}
+      </main>
+    </div>
+  );
+};
+
+export default App;
