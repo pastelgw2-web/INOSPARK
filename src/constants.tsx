@@ -1,4 +1,13 @@
-import { Project, ProjectCategory, ProjectStatus, User, UserRole, Announcement, InnovationChallenge, VerificationStatus } from './types';
+import { 
+  Project, 
+  ProjectCategory, 
+  ProjectStatus, 
+  User, 
+  UserRole, 
+  Announcement, 
+  InnovationChallenge, 
+  VerificationStatus 
+} from './types';
 
 export const MOCK_USERS: User[] = [
   {
