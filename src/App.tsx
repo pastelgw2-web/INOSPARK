@@ -9,7 +9,8 @@ import CollaborationHub from './pages/CollaborationHub';
 import Innovate from './pages/Innovate';
 import UserDashboard from './pages/UserDashboard';
 import StoryPortal from './pages/StoryPortal';
-import { Project, User, UserRole, ProjectCategory, ProjectStatus, Donation, SiteSettings, VolunteerApplication } from './types';
+// Pastikan Import konsisten
+import { Project, User, Donation, SiteSettings, VolunteerApplication, Announcement, InnovationChallenge } from './types';
 import { MOCK_PROJECTS, MOCK_USERS, MOCK_ANNOUNCEMENTS, MOCK_CHALLENGES } from './constants';
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -20,8 +21,9 @@ const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
-  const [users, setUsers] = useState<User[]>(MOCK_USERS);
+  // PENGAMAN: Gunakan fallback array kosong [] jika data MOCK gagal load
+  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS || []);
+  const [users, setUsers] = useState<User[]>(MOCK_USERS || []);
   const [donations, setDonations] = useState<Donation[]>([]);
   const [volunteerApps, setVolunteerApps] = useState<VolunteerApplication[]>([]);
   
@@ -106,7 +108,8 @@ const App: React.FC = () => {
     }
 
     if (selectedStoryId || currentView === 'news') {
-      const news = selectedStoryId ? MOCK_ANNOUNCEMENTS.find(n => n.id === selectedStoryId) : null;
+      // PENGAMAN: Tambahkan Optional Chaining ?. dan fallback []
+      const news = selectedStoryId ? (MOCK_ANNOUNCEMENTS || []).find(n => n.id === selectedStoryId) : null;
       return (
         <PageWrapper>
           <StoryPortal 
@@ -140,20 +143,21 @@ const App: React.FC = () => {
       case 'corporate':
         return (
           <PageWrapper>
-            <CollaborationHub challenges={MOCK_CHALLENGES} user={user} onJoinChallenge={(id) => alert('Joined!')} />
+            <CollaborationHub challenges={MOCK_CHALLENGES || []} user={user} onJoinChallenge={(id) => alert('Joined!')} />
           </PageWrapper>
         );
       case 'login':
         return <PageWrapper><Auth onLogin={(u) => { setUser(u); setView('home'); }} onBack={() => setView('home')} /></PageWrapper>;
       default:
-        const filteredProjects = projects.filter(p => 
+        // PENGAMAN: Pastikan projects adalah array sebelum filter
+        const filteredProjects = (projects || []).filter(p => 
           (selectedCategory === 'All' || p.category === selectedCategory) &&
           (p.title.toLowerCase().includes(searchTerm.toLowerCase()) || p.description.toLowerCase().includes(searchTerm.toLowerCase()))
         );
 
         return (
           <>
-            <NewsSlider items={MOCK_ANNOUNCEMENTS} onOpenStory={handleOpenStory} />
+            <NewsSlider items={MOCK_ANNOUNCEMENTS || []} onOpenStory={handleOpenStory} />
             <PageWrapper>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div className="relative flex-1">
@@ -171,7 +175,8 @@ const App: React.FC = () => {
                   />
                 </div>
                 <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-                  {['All', 'Technology', 'Social', 'Green', 'Creative'].map((cat) => (
+                  {/* SINKRONISASI: Sesuaikan kategori dengan ProjectCategory di types.ts */}
+                  {['All', 'Technology', 'Social', 'Environment', 'Education', 'Health'].map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setSelectedCategory(cat)}
@@ -234,12 +239,4 @@ const App: React.FC = () => {
         <button onClick={() => handleNavigate('innovate')} className="p-3 bg-[var(--primary-color)] text-white rounded-2xl shadow-lg -translate-y-6">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
         </button>
-        <button onClick={() => handleNavigate('dashboard')} className={`p-2 ${currentView === 'dashboard' ? 'text-[var(--primary-color)]' : 'text-gray-400'}`}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default App;
+        <button onClick={() => handleNavigate('dashboard')} className={`p-2 ${currentView === 'dashboard' ? 'text-[var
