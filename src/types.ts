@@ -1,4 +1,3 @@
-
 export enum ProjectCategory {
   TECHNOLOGY = 'Technology',
   SOCIAL = 'Social',
@@ -28,12 +27,6 @@ export enum VerificationStatus {
   VERIFIED = 'Verified'
 }
 
-export interface SiteSettings {
-  platformName: string;
-  primaryColor: string;
-  logoUrl: string;
-}
-
 export interface SkillRequirement {
   id: string;
   name: string;
@@ -51,7 +44,6 @@ export interface User {
   skills?: string[];
   isVerified: boolean;
   kycStatus?: VerificationStatus;
-  isRestricted?: boolean;
 }
 
 export interface Project {
@@ -71,25 +63,6 @@ export interface Project {
   volunteersCount: number;
 }
 
-export interface Donation {
-  id: string;
-  projectId: string;
-  donorName: string;
-  amount: number;
-  isRecurring: boolean;
-  timestamp: string;
-}
-
-export interface VolunteerApplication {
-  id: string;
-  projectId: string;
-  userId: string;
-  skillId: string;
-  pitch: string;
-  status: 'Pending' | 'Approved' | 'Rejected';
-}
-
-// Added missing Announcement interface for NewsSlider and constant mocks
 export interface Announcement {
   id: string;
   title: string;
@@ -99,7 +72,6 @@ export interface Announcement {
   active: boolean;
 }
 
-// Added missing InnovationChallenge interface for CollaborationHub and constant mocks
 export interface InnovationChallenge {
   id: string;
   companyName: string;
