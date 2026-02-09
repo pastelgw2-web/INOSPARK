@@ -1,3 +1,4 @@
+/* FORCE_BUILD_ID: 2026_REV_03 */
 import React, { useState } from 'react';
 import Navigation from './components/Navigation';
 import ProjectCard from './components/ProjectCard';
@@ -8,7 +9,7 @@ import CollaborationHub from './pages/CollaborationHub';
 import Innovate from './pages/Innovate';
 import { Project, User } from './types';
 
-// Pastikan import ini mengarah ke mockData sesuai log terakhir Anda
+// Import dari file data baru Anda
 import { MOCK_PROJECTS, MOCK_ANNOUNCEMENTS, MOCK_CHALLENGES } from './mockData';
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -23,10 +24,10 @@ const App: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // PENGAMAN 1: Menjamin data adalah array
-  const projects = MOCK_PROJECTS ?? [];
-  const announcements = MOCK_ANNOUNCEMENTS ?? [];
-  const challenges = MOCK_CHALLENGES ?? [];
+  // JAMINAN DATA: Mencegah error 'length' jika data belum terbaca
+  const projects = Array.isArray(MOCK_PROJECTS) ? MOCK_PROJECTS : [];
+  const announcements = Array.isArray(MOCK_ANNOUNCEMENTS) ? MOCK_ANNOUNCEMENTS : [];
+  const challenges = Array.isArray(MOCK_CHALLENGES) ? MOCK_CHALLENGES : [];
 
   const renderContent = () => {
     if (selectedProjectId) {
@@ -42,9 +43,9 @@ const App: React.FC = () => {
       case 'login':
         return <PageWrapper><Auth onLogin={(u) => { setUser(u); setView('home'); }} onBack={() => setView('home')} /></PageWrapper>;
       default:
-        // PENGAMAN 2: Kode yang Anda tanyakan diletakkan di sini
-        const filtered = (projects || []).filter(p => {
-          const title = p.title || "";
+        // FILTER DENGAN PROTEKSI: Lokasi yang Anda tanyakan tadi
+        const filtered = projects.filter(p => {
+          const title = p && p.title ? p.title : "";
           return title.toLowerCase().includes(searchTerm.toLowerCase());
         });
 
@@ -66,7 +67,9 @@ const App: React.FC = () => {
                     <ProjectCard key={p.id} project={p} onClick={() => setSelectedProjectId(p.id)} />
                   ))
                 ) : (
-                  <div className="col-span-3 text-center py-20 text-gray-400">Belum ada data proyek tersedia.</div>
+                  <div className="col-span-3 text-center py-20 text-gray-400">
+                    Belum ada data proyek tersedia.
+                  </div>
                 )}
               </div>
             </PageWrapper>
