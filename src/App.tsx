@@ -1,15 +1,13 @@
-/* BUILD_ID: REFRESH_SYSTEM_V2_2026 */
+/* BUILD_ID: TOTAL_REPAIR_V4 */
 import React, { useState } from 'react';
-import Navigation from './components/Navigation';
-import ProjectCard from './components/ProjectCard';
-import NewsSlider from './components/NewsSlider';
-import ProjectDetail from './pages/ProjectDetail';
-import Auth from './pages/Auth';
-import CollaborationHub from './pages/CollaborationHub';
-import Innovate from './pages/Innovate';
+import Navigation from './src/components/Navigation';
+import ProjectCard from './src/components/ProjectCard';
+import NewsSlider from './src/components/NewsSlider';
+import ProjectDetail from './src/pages/ProjectDetail';
+import Auth from './src/pages/Auth';
+import CollaborationHub from './src/pages/CollaborationHub';
+import Innovate from './src/pages/Innovate';
 import { Project, User } from './types';
-
-// Import data dari file mockData yang sudah Anda buat tadi
 import { MOCK_PROJECTS, MOCK_ANNOUNCEMENTS, MOCK_CHALLENGES } from './mockData';
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -24,7 +22,7 @@ const App: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // JAMINAN ARRAY: Kode ini memastikan 'length' tidak akan pernah undefined
+  // Jaminan data agar tidak undefined atau error 'length'
   const projects = Array.isArray(MOCK_PROJECTS) ? MOCK_PROJECTS : [];
   const announcements = Array.isArray(MOCK_ANNOUNCEMENTS) ? MOCK_ANNOUNCEMENTS : [];
   const challenges = Array.isArray(MOCK_CHALLENGES) ? MOCK_CHALLENGES : [];
@@ -43,9 +41,8 @@ const App: React.FC = () => {
       case 'login':
         return <PageWrapper><Auth onLogin={(u) => { setUser(u); setView('home'); }} onBack={() => setView('home')} /></PageWrapper>;
       default:
-        // FILTER DENGAN PROTEKSI TOTAL
         const filtered = projects.filter(p => {
-          const title = p && p.title ? String(p.title) : "";
+          const title = p?.title || "";
           return title.toLowerCase().includes(searchTerm.toLowerCase());
         });
 
@@ -57,7 +54,7 @@ const App: React.FC = () => {
                 <input 
                   type="text" 
                   placeholder="Cari inovasi di InnoSpark..." 
-                  className="w-full p-4 rounded-2xl border shadow-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full p-4 rounded-2xl border shadow-sm outline-none focus:ring-2 focus:ring-emerald-500"
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
@@ -67,9 +64,7 @@ const App: React.FC = () => {
                     <ProjectCard key={p.id} project={p} onClick={() => setSelectedProjectId(p.id)} />
                   ))
                 ) : (
-                  <div className="col-span-3 text-center py-20 text-gray-400">
-                    Belum ada data proyek tersedia saat ini.
-                  </div>
+                  <div className="col-span-3 text-center py-20 text-gray-400">Data proyek tidak ditemukan.</div>
                 )}
               </div>
             </PageWrapper>
