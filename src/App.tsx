@@ -8,7 +8,7 @@ import CollaborationHub from './pages/CollaborationHub';
 import Innovate from './pages/Innovate';
 import { Project, User } from './types';
 
-// IMPORT DARI FILE BARU
+// Pastikan import ini mengarah ke mockData sesuai log terakhir Anda
 import { MOCK_PROJECTS, MOCK_ANNOUNCEMENTS, MOCK_CHALLENGES } from './mockData';
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -23,7 +23,7 @@ const App: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // PENGAMAN: Memastikan variabel selalu berupa array agar .length tidak error
+  // PENGAMAN 1: Menjamin data adalah array
   const projects = MOCK_PROJECTS ?? [];
   const announcements = MOCK_ANNOUNCEMENTS ?? [];
   const challenges = MOCK_CHALLENGES ?? [];
@@ -42,10 +42,11 @@ const App: React.FC = () => {
       case 'login':
         return <PageWrapper><Auth onLogin={(u) => { setUser(u); setView('home'); }} onBack={() => setView('home')} /></PageWrapper>;
       default:
-        // Optional chaining ?. mencegah error jika title kosong
-        const filtered = projects.filter(p => 
-          p.title?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false
-        );
+        // PENGAMAN 2: Kode yang Anda tanyakan diletakkan di sini
+        const filtered = (projects || []).filter(p => {
+          const title = p.title || "";
+          return title.toLowerCase().includes(searchTerm.toLowerCase());
+        });
 
         return (
           <>
