@@ -1,4 +1,4 @@
-/* FORCE_BUILD_ID: 2026_REV_03 */
+/* BUILD_ID: REFRESH_SYSTEM_V2_2026 */
 import React, { useState } from 'react';
 import Navigation from './components/Navigation';
 import ProjectCard from './components/ProjectCard';
@@ -9,7 +9,7 @@ import CollaborationHub from './pages/CollaborationHub';
 import Innovate from './pages/Innovate';
 import { Project, User } from './types';
 
-// Import dari file data baru Anda
+// Import data dari file mockData yang sudah Anda buat tadi
 import { MOCK_PROJECTS, MOCK_ANNOUNCEMENTS, MOCK_CHALLENGES } from './mockData';
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -24,7 +24,7 @@ const App: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // JAMINAN DATA: Mencegah error 'length' jika data belum terbaca
+  // JAMINAN ARRAY: Kode ini memastikan 'length' tidak akan pernah undefined
   const projects = Array.isArray(MOCK_PROJECTS) ? MOCK_PROJECTS : [];
   const announcements = Array.isArray(MOCK_ANNOUNCEMENTS) ? MOCK_ANNOUNCEMENTS : [];
   const challenges = Array.isArray(MOCK_CHALLENGES) ? MOCK_CHALLENGES : [];
@@ -43,9 +43,9 @@ const App: React.FC = () => {
       case 'login':
         return <PageWrapper><Auth onLogin={(u) => { setUser(u); setView('home'); }} onBack={() => setView('home')} /></PageWrapper>;
       default:
-        // FILTER DENGAN PROTEKSI: Lokasi yang Anda tanyakan tadi
+        // FILTER DENGAN PROTEKSI TOTAL
         const filtered = projects.filter(p => {
-          const title = p && p.title ? p.title : "";
+          const title = p && p.title ? String(p.title) : "";
           return title.toLowerCase().includes(searchTerm.toLowerCase());
         });
 
@@ -56,7 +56,7 @@ const App: React.FC = () => {
               <div className="mb-8">
                 <input 
                   type="text" 
-                  placeholder="Cari inovasi..." 
+                  placeholder="Cari inovasi di InnoSpark..." 
                   className="w-full p-4 rounded-2xl border shadow-sm focus:ring-2 focus:ring-emerald-500 outline-none"
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -68,7 +68,7 @@ const App: React.FC = () => {
                   ))
                 ) : (
                   <div className="col-span-3 text-center py-20 text-gray-400">
-                    Belum ada data proyek tersedia.
+                    Belum ada data proyek tersedia saat ini.
                   </div>
                 )}
               </div>
